@@ -5,6 +5,7 @@ from sqlmodel import Session, select
 
 from app.models.hero_models import Hero, HeroCreate, HeroUpdate
 from app.repositories.hero_repository import (
+    HeroRepository,
     create_repo,
     delete_repo,
     read_many_repo,
@@ -14,30 +15,36 @@ from app.repositories.hero_repository import (
 
 
 class HeroService:
-    def __init__(self, session: Session) -> None:
+    def __init__(self, session: Session, repo: HeroRepository) -> None:
         self.session = session
+        self.repo = repo
 
     def create(self, hero: HeroCreate) -> Hero:
         db_hero = Hero.model_validate(hero)
-        db_hero = create_repo(db_hero, self.session)
+        # db_hero = create_repo(db_hero, self.session)
+        db_hero = self.repo.create(db_hero)
         return db_hero
 
     def read_many(self, offset: int = 0, limit: int = 100):
-        heroes = read_many_repo(self.session, offset, limit)
+        # heroes = read_many_repo(self.session, offset, limit)
+        heroes = self.repo.read_many(offset, limit)
         return heroes
 
     def read_one(self, hero_id: int) -> Hero:
-        hero = read_one_repo(self.session, hero_id)
+        # hero = read_one_repo(self.session, hero_id)
+        hero = self.repo.read_one(hero_id)
         if not hero:
             raise HTTPException(status_code=404, detail="Hero not found")
         return hero
 
     def update(self, hero_id: int, hero: HeroUpdate) -> Hero:
-        hero_db = read_one_repo(self.session, hero_id)
+        # hero_db = read_one_repo(self.session, hero_id)
+        hero_db = self.repo.read_one(hero_id)
         if not hero_db:
             raise HTTPException(status_code=404, detail="Hero not found")
         hero_data = hero.model_dump(exclude_unset=True)
-        hero_db = update_repo(self.session, hero_db, hero_data)
+        # hero_db = update_repo(self.session, hero_db, hero_data)
+        hero_db = self.repo.update(hero_db, hero_data)
         # hero_db.sqlmodel_update(hero_data)
         # self.session.add(hero_db)
         # self.session.commit()
@@ -45,10 +52,12 @@ class HeroService:
         return hero_db
 
     def delete(self, hero_id: int) -> None:
-        hero = read_one_repo(self.session, hero_id)
+        # hero = read_one_repo(self.session, hero_id)
+        hero = self.repo.read_one(hero_id)
         if not hero:
             raise HTTPException(status_code=404, detail="Hero not found")
-        delete_repo(self.session, hero)
+        # delete_repo(self.session, hero)
+        self.repo.delete(hero)
 
 
 # def create_hero_service(hero: HeroCreate, session: SessionDep):

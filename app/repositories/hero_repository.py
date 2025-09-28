@@ -22,7 +22,7 @@ class HeroRepository:
         hero = self.session.get(Hero, hero_id)
         return hero
 
-    def update_repo(self, hero_db: Hero, hero_data: dict) -> Hero:
+    def update(self, hero_db: Hero, hero_data: dict) -> Hero:
         hero_db.sqlmodel_update(hero_data)
         self.session.add(hero_db)
         self.session.commit()
