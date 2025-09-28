@@ -1,14 +1,13 @@
 from typing import Annotated
 
 from fastapi import HTTPException, Query
-from sqlmodel import select
+from sqlmodel import Session, select
 
-from app.dependencies import SessionDep
 from app.models.hero_models import Hero, HeroCreate, HeroUpdate
 
 
 class HeroService:
-    def __init__(self, session: SessionDep) -> None:
+    def __init__(self, session: Session) -> None:
         self.session = session
 
     def create(self, hero: HeroCreate) -> Hero:
