@@ -11,8 +11,3 @@ def create_db_and_tables():
     from app.models.hero_models import SQLModel  # import all models here
 
     SQLModel.metadata.create_all(engine)
-
-
-def get_session():
-    with Session(engine) as session:
-        yield session

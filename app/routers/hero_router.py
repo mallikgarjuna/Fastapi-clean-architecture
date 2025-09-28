@@ -3,7 +3,6 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
 
-from app.db import get_session
 from app.dependencies import SessionDep
 from app.models.hero_models import Hero, HeroCreate, HeroPublic, HeroUpdate
 from app.services.hero_service import (
