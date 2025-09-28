@@ -8,7 +8,7 @@ engine = create_engine(sqlite_url, connect_args=connect_args)
 
 
 def create_db_and_tables():
-    from app.models.user_models import SQLModel  # import all models here
+    from app.models.hero_models import SQLModel  # import all models here
 
     SQLModel.metadata.create_all(engine)
 
