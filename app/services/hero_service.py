@@ -15,8 +15,7 @@ from app.repositories.hero_repository import (
 
 
 class HeroService:
-    def __init__(self, session: Session, repo: HeroRepository) -> None:
-        self.session = session
+    def __init__(self, repo: HeroRepository) -> None:
         self.repo = repo
 
     def create(self, hero: HeroCreate) -> Hero:
