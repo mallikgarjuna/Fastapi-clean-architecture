@@ -4,6 +4,7 @@ from fastapi import Depends
 from sqlmodel import Session
 
 from app.db import engine
+from app.services.hero_service import HeroService
 
 
 def get_session():
@@ -12,3 +13,10 @@ def get_session():
 
 
 SessionDep = Annotated[Session, Depends(get_session)]
+
+
+def get_hero_service(session: SessionDep) -> HeroService:
+    return HeroService(session=session)
+
+
+HeroServiceDep = Annotated[HeroService, Depends(get_hero_service)]
