@@ -7,6 +7,46 @@ from app.dependencies import SessionDep
 from app.models.hero_models import Hero, HeroCreate, HeroUpdate
 
 
+class HeroService:
+    def __init__(self, session: SessionDep) -> None:
+        self.session = session
+
+    def create(self, hero: HeroCreate) -> Hero:
+        db_hero = Hero.model_validate(hero)
+        self.session.add(db_hero)
+        self.session.commit()
+        self.session.refresh(db_hero)
+        return db_hero
+
+    def read_many(self, offset: int = 0, limit: int = 100):
+        heroes = self.session.exec(select(Hero).offset(offset).limit(limit)).all()
+        return heroes
+
+    def read_one(self, hero_id: int) -> Hero:
+        hero = self.session.get(Hero, hero_id)
+        if not hero:
+            raise HTTPException(status_code=404, detail="Hero not found")
+        return hero
+
+    def update(self, hero_id: int, hero: HeroUpdate) -> Hero:
+        hero_db = self.session.get(Hero, hero_id)
+        if not hero_db:
+            raise HTTPException(status_code=404, detail="Hero not found")
+        hero_data = hero.model_dump(exclude_unset=True)
+        hero_db.sqlmodel_update(hero_data)
+        self.session.add(hero_db)
+        self.session.commit()
+        self.session.refresh(hero_db)
+        return hero_db
+
+    def delete(self, hero_id: int) -> None:
+        hero = self.session.get(Hero, hero_id)
+        if not hero:
+            raise HTTPException(status_code=404, detail="Hero not found")
+        self.session.delete(hero)
+        self.session.commit()
+
+
 def create_hero_service(hero: HeroCreate, session: SessionDep):
     db_hero = Hero.model_validate(hero)
     session.add(db_hero)
