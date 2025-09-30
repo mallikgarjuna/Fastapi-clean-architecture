@@ -17,7 +17,8 @@ def get_settings():
 settings = get_settings()
 
 connect_args = {"check_same_thread": False}
-engine = create_engine(settings.database_url, echo=True, connect_args=connect_args)
+# engine = create_engine(settings.database_url, echo=True, connect_args=connect_args)
+engine = create_engine(settings.database_url, echo=True)
 
 
 def create_db_and_tables():
