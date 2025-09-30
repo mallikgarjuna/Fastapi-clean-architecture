@@ -7,8 +7,15 @@ class Settings(BaseSettings):
     # Check with this:
     db_engine: str = "sqlite"  # default db; (sqlite/ postgres)
 
-    # sqlite settings (read from .env file)
+    # sqlite settings (will be read from .env file)
     sqlite_file_name: str = "database.db"
+
+    # Postgres settings (will be read from .env file)
+    postgres_user: str | None = None
+    postgres_password: str | None = None
+    postgres_host: str = "localhost"
+    postgres_port: int = 5432
+    postgres_db: str | None = None
 
     # read env vars from .env file
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
@@ -21,11 +28,24 @@ class Settings(BaseSettings):
                 raise ValueError(
                     "SQLITE_FILE_NAME must be set when DB_ENGINE=sqlite in .env file",
                 )
-        return f"sqlite:///{self.sqlite_file_name}"
+            return f"sqlite:///{self.sqlite_file_name}"
+
+        elif self.db_engine == "postgres":
+            if not all([self.postgres_user, self.postgres_password, self.postgres_db]):
+                raise ValueError("Postgres settings incomplete in .env file")
+            return (
+                f"postgresql+psycopg2://{self.postgres_user}:{self.postgres_password}"
+                f"@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
+            )
+
+        else:
+            message = f"Invalid or unsupported DB_ENGINE: {self.db_engine}"
+            raise ValueError(message)
 
 
 # Test with interactive ipynb in vscode itself (using Shift + Enter)
 if __name__ == "__main__":
     settings = Settings()
+    print(settings.db_engine)
     print(settings.sqlite_file_name)  # dabase.db
     print(settings.database_url)  # sqlite:///dabase.db
