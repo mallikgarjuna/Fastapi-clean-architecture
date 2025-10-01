@@ -1,0 +1,21 @@
+FROM python:3.12-slim
+
+# Set working directory
+WORKDIR /fastapi-architecture-dkr
+
+# Copy dependency files first for layer caching
+COPY pyproject.toml uv.lock ./
+
+# Install UV CLI
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
+# Install python dependencies
+RUN uv sync --frozen --no-cache
+
+# Copy application code
+COPY . .
+
+# Run the application
+# CMD ["/fastapi-architecture-dkr/.venv/bin/fastapi", "run", "app/main.py", "--port", "8000", "--host", "0.0.0.0"]
+CMD ["uv", "run", "fastapi", "run", "app/main.py", "--port", "8000", "--host", "0.0.0.0"]
+# CMD ["uv", "run", "uvicorn", "app.main:app", "--port", "8000", "--host", "0.0.0.0"]
