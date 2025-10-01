@@ -1,0 +1,60 @@
+# version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: fastapi-app
+    # restart: always
+    depends_on:
+      - db
+      - migrations
+    environment:
+      # Docker sets these variables inside the container process.
+      # .env file is ignored inside Docker unless you explicitly mount it
+      # and tell Pydantic to read it. But usually, you don’t need to
+      # read .env inside a container if you already set environment: in Docker Compose.
+      DB_ENGINE: postgres # if using hyphen -, use = (but don't mix): `- DB_ENGINE=postgres`;
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_HOST: db # not `localhost`, but use service name;
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: fastapi_architecture_db
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/fastapi-architecture-dkr
+    command: ["uv", "run", "fastapi", "run", "app/main.py"]
+
+  db:
+    image: postgres:15
+    container_name: fastapi-db
+    # restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: fastapi_architecture_db
+    ports:
+      - "5433:5432" # <-- host post 5433 (not 5432)
+    # host:container (so it doesn’t clash with local Postgres)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  migrations:
+    build: .
+    container_name: fastapi-migrations
+    # restart: on-failure:3
+    depends_on:
+      - db
+    environment:
+      DB_ENGINE: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_HOST: db # not `localhost`, but use service name;
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: fastapi_architecture_db
+    volumes:
+      - .:/fastapi-architecture-dkr
+    command: ["uv", "run", "alembic", "upgrade", "head"]
+
+volumes:
+  postgres_data:
