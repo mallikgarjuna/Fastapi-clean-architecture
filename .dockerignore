@@ -1,0 +1,70 @@
+# -----------------------------
+# Python
+# -----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environment
+.venv/
+
+# Mypy / type checker cache
+.mypy_cache/
+
+# -----------------------------
+# Local dev / tooling
+# -----------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# HTTP test files
+api.http
+
+# -----------------------------
+# Database & secrets
+# -----------------------------
+*.db
+.env
+.env.*
+
+# -----------------------------
+# Version control
+# -----------------------------
+.git
+.gitignore
+.gitattributes
+
+# -----------------------------
+# Build / packaging
+# -----------------------------
+*.egg-info/
+*.egg
+dist/
+build/
+
+# -----------------------------
+# Docker / infra files
+# (kept locally, not in image)
+# -----------------------------
+docker-compose.yml
+Dockerfile
+.dockerignore
+run.sh
+
+# -----------------------------
+# Tests (optional – include only if you want them in CI image)
+# -----------------------------
+tests/
+.coverage
+htmlcov/
