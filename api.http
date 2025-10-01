@@ -7,9 +7,10 @@ POST http://localhost:8000/heroes HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "string1",
-  "age": 1,
-  "secret_name": "string1"
+  "name": "string5-alembic",
+  "age": 5,
+  "secret_name": "string5",
+  "gender": "Male"
 }
 
 ### GET many

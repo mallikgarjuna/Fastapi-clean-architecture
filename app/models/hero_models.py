@@ -4,6 +4,7 @@ from sqlmodel import Field, SQLModel
 class HeroBase(SQLModel):
     name: str = Field(index=True)
     age: int | None = Field(default=None, index=True)
+    gender: str | None = None
 
 
 class Hero(HeroBase, table=True):
@@ -23,3 +24,4 @@ class HeroUpdate(HeroBase):
     name: str | None = None
     age: int | None = None
     secret_name: str | None = None
+    gender: str | None = None
