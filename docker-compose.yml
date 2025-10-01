@@ -56,5 +56,16 @@ services:
       - .:/fastapi-architecture-dkr
     command: ["uv", "run", "alembic", "upgrade", "head"]
 
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: fastapi-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com # login email
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80" # host:container (browser access on http://localhost:5050)
+    depends_on:
+      - db
+
 volumes:
   postgres_data:
