@@ -53,3 +53,22 @@ def test_create_hero(client: TestClient):
     assert data["age"] is None
     assert data["gender"] is None
     assert data["id"] is not None
+
+
+def test_create_hero_incomplete(client: TestClient):
+    # No secret_name
+    response = client.post("/heroes", json={"name": "Deadpond"})
+
+    assert response.status_code == 422  # not 400
+
+
+def test_create_hero_invalid(client: TestClient):
+    response = client.post(
+        "/heroes",
+        json={
+            "name": "Deadpond",
+            "secret_name": {"message": "This is a wrong data type for secret_name."},
+        },
+    )
+
+    assert response.status_code == 422
