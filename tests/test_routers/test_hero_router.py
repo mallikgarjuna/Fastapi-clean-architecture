@@ -102,3 +102,52 @@ def test_read_heroes(session: Session, client: TestClient):
     assert data[1]["age"] == hero_2.age
     assert data[1]["gender"] == hero_2.gender
     assert data[1]["id"] == hero_2.id
+
+
+def test_read_hero(session: Session, client: TestClient):
+    hero_1 = Hero(name="Deadpond", secret_name="Dive Wilson")
+    session.add(hero_1)
+    session.commit()
+
+    response = client.get(f"/heroes/{hero_1.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+
+    assert data["name"] == "Deadpond"
+    assert data.get("secret_name") is None
+    assert "secret_name" not in data
+    assert data["age"] == hero_1.age
+    assert data["gender"] == hero_1.gender
+    assert data["id"] == hero_1.id
+
+
+def test_update_hero(session: Session, client: TestClient):
+    hero_1 = Hero(name="Deadpond", secret_name="Dive Wilson")
+    session.add(hero_1)
+    session.commit()
+
+    response = client.patch(f"/heroes/{hero_1.id}", json={"name": "Deadpuddle"})
+    data = response.json()
+
+    assert response.status_code == 200
+
+    assert data["name"] == "Deadpuddle"
+    assert data.get("secret_name") is None
+    assert "secret_name" not in data
+    assert data["age"] == hero_1.age
+    assert data.get("age") == hero_1.age
+    assert data.get("age") is None
+    assert data.get("id") == hero_1.id
+
+
+def test_delete_hero(session: Session, client: TestClient):
+    hero_1 = Hero(name="Deadpond", secret_name="Dive Wilson")
+    session.add(hero_1)
+    session.commit()
+
+    response = client.delete(f"/heroes/{hero_1.id}")
+
+    hero_in_db = session.get(Hero, hero_1.id)
+    assert response.status_code == 200
+    assert hero_in_db is None
