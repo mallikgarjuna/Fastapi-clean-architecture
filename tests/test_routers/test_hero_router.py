@@ -22,18 +22,22 @@ def session_fixture():
         yield session
 
 
-def test_create_hero(session: Session):
+@pytest.fixture(name="client")
+def client_fixture(session: Session):
     def get_session_override():
         return session
 
     app.dependency_overrides[get_session] = get_session_override
     client = TestClient(app=app)
+    yield client
+    app.dependency_overrides.clear()
 
+
+def test_create_hero(client: TestClient):
     response = client.post(
         "/heroes",
         json={"name": "Deadpond", "secret_name": "Dive Wilson"},
     )
-    app.dependency_overrides.clear()
 
     data = response.json()
 
