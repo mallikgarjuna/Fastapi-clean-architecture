@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import StaticPool, create_engine
 from sqlmodel import Session, SQLModel
 
 from app.dependencies import get_session
@@ -9,12 +9,17 @@ from app.main import app
 
 
 def test_create_hero():
-    test_filename = "testing.db"
-    project_root = Path(__file__).resolve().parent.parent.parent
-    test_file_path = project_root / test_filename
-    sqlite_url = f"sqlite:///{test_file_path}"
+    # test_filename = "testing.db"
+    # project_root = Path(__file__).resolve().parent.parent.parent
+    # test_file_path = project_root / test_filename
+    # sqlite_url = f"sqlite:///{test_file_path}"
+    sqlite_url = "sqlite://"  # In-memory db
 
-    engine = create_engine(sqlite_url, connect_args={"check_same_thread": False})
+    engine = create_engine(
+        sqlite_url,
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
     SQLModel.metadata.create_all(engine)
 
     with Session(engine) as session:
@@ -45,5 +50,3 @@ def test_create_hero():
         assert data["age"] is None
         assert data["gender"] is None
         assert data["id"] is not None
-
-    test_file_path.unlink()
