@@ -45,3 +45,5 @@ def test_create_hero():
         assert data["age"] is None
         assert data["gender"] is None
         assert data["id"] is not None
+
+    test_file_path.unlink()
