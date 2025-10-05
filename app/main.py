@@ -1,16 +1,12 @@
-import logging
-
 from fastapi import FastAPI
 
 from app.db import create_db_and_tables
+from app.logging_config import get_logger, setup_logging
 from app.routers import hero_router
 
-logging.basicConfig(
-    level=logging.INFO,
-    filename="app.log",
-    format="%(asctime)s | %(levelname)s : %(message)s",
-)
-logger = logging.getLogger(__name__)
+# Initialize logging and create logger for this module
+setup_logging()
+logger = get_logger(__name__)
 
 app = FastAPI()
 logger.info("API is ready.")
