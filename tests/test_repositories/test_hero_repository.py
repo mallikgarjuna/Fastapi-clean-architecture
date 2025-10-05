@@ -5,7 +5,7 @@ from app.repositories.hero_repository import HeroRepository
 # Integration style tests for HeroRepository using the `session` fixture from `tests/conftest.py`
 # `session` fixture is taken from the tests/conftest.py automatically by `pytest`
 def test_create(session):
-    """Commits and refreshes"""
+    """Test create commits and refreshes."""
     # def create(self, db_hero: Hero) -> Hero:
     #     self.session.add(db_hero)
     #     self.session.commit()
@@ -32,6 +32,7 @@ def test_create(session):
 
 
 def test_read_many(session):
+    """Test read many rows."""
     # def read_many(self, offset: int = 0, limit: int = 100):
     #     heroes = self.session.exec(select(Hero).offset(offset).limit(limit)).all()
     #     return heroes
@@ -56,6 +57,7 @@ def test_read_many(session):
 
 
 def test_read_one(session):
+    """Test read one row."""
     # def read_one(self, hero_id: int):
     #     hero = self.session.get(Hero, hero_id)
     #     return hero
@@ -67,7 +69,8 @@ def test_read_one(session):
     hero_created = repo.create(Hero(name="Deadpond", secret_name="Dive Wilson"))
 
     # Act
-    result = repo.read_one(hero_created.id)
+    if hero_created.id is not None:
+        result = repo.read_one(hero_created.id)
 
     # Assert
     assert result is not None
@@ -75,7 +78,7 @@ def test_read_one(session):
 
 
 def test_update(session):
-    """Test update persists changes"""
+    """Test update persists changes."""
     # def update(self, hero_db: Hero, hero_data: dict) -> Hero:
     #     hero_db.sqlmodel_update(hero_data)
     #     self.session.add(hero_db)
@@ -102,7 +105,7 @@ def test_update(session):
 
 
 def test_delete(session):
-    """Test delete removes row"""
+    """Test delete removes row."""
     # def delete(self, hero) -> None:
     #     self.session.delete(hero)
     #     self.session.commit()
