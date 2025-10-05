@@ -47,51 +47,63 @@ There are still a couple of things I want to do (like refactoring and adding new
 
 ## Project tree structure
 
-. # Project's root directory
-├── app # Fastapi app
-│ ├── models
-│ ├── repositories
-│ ├── routers
-│ ├── services
-│ ├── config.py
-│ ├── db.py
-│ ├── dependencies.py
-│ ├── **init**.py
-│ ├── logging_config.py
-│ └── main.py
-├── logs
-│ └── app.log
-├── migrations
-│ ├── versions
-│ ├── env.py
-│ ├── README
-│ └── script.py.mako
-├── .pytest_cache
-│ ├── v
-│ ├── CACHEDIR.TAG
-│ ├── .gitignore
-│ └── README.md
-├── tests
-│ ├── test_repositories
-│ ├── test_routers
-│ ├── test_services
-│ ├── conftest.py
-│ └── **init**.py
-├── alembic.ini
-├── api.http
-├── app.log
-├── database.db
-├── docker-compose.yml
-├── Dockerfile
-├── .dockerignore
-├── .env
-├── .gitignore
-├── notes-mg.py
-├── pyproject.toml
-├── .python-version
-├── README.md
-├── run.sh
-└── uv.lock
+```txt
+.
+├── app/                                   # FastAPI application code
+│   ├── models/                            # Database models and Pydantic schemas
+│   │   ├── hero_models.py                 # Hero model and schema definitions
+│   │   └── __init__.py                    # Marks models/ as a Python package
+│   ├── repositories/                      # Database access layer (CRUD operations)
+│   │   ├── hero_repository.py             # Hero repository for DB operations
+│   │   └── __init__.py                    # Marks repositories/ as a Python package
+│   ├── routers/                           # API route definitions
+│   │   ├── hero_router.py                 # Hero-related API endpoints
+│   │   └── __init__.py                    # Marks routers/ as a Python package
+│   ├── services/                          # Business logic layer
+│   │   ├── hero_service.py                # Hero-related service functions
+│   │   └── __init__.py                    # Marks services/ as a Python package
+│   ├── config.py                          # Project-wide configuration settings
+│   ├── db.py                              # Database connection setup
+│   ├── dependencies.py                    # FastAPI dependency injections
+│   ├── logging_config.py                  # Logging setup (console + file)
+│   └── main.py                            # FastAPI application entrypoint
+│   ├── __init__.py                        # Marks app/ as a Python package
+├── logs/                                  # Log folder
+│   ├── app.log                            # Log output file
+│   └── .gitkeep                           # Placeholder file to track logs/ folder
+├── migrations/                            # Alembic database migration scripts
+│   ├── versions/                          # Auto-generated migration scripts
+│   │   └── 1350d4a96879_init_migratin.py  # Initial DB migration
+│   ├── env.py                             # Alembic environment configuration
+│   ├── README                             # Alembic folder usage notes
+│   └── script.py.mako                     # Alembic migration template script
+├── tests/                                 # Automated tests
+│   ├── test_repositories/                  # Tests for database repositories
+│   │   ├── __init__.py
+│   │   └── test_hero_repository.py         # Tests for Hero repository
+│   ├── test_routers/                       # Tests for API routes
+│   │   ├── __init__.py
+│   │   └── test_hero_router.py             # Tests for Hero API endpoints
+│   ├── test_services/                      # Tests for business logic services
+│   │   ├── __init__.py
+│   │   └── test_hero_service.py            # Tests for Hero services
+│   ├── conftest.py                         # Pytest fixtures and setup
+│   └── __init__.py                         # Marks tests/ as a Python package
+├── alembic.ini                             # Alembic configuration file
+├── api.http                                # Predefined HTTP requests for testing APIs in VSCode
+├── database.db                             # Local SQLite database (if used in config.py file)
+├── docker-compose.yml                      # Docker Compose setup for app + services
+├── Dockerfile                              # Docker image definition for FastAPI app
+├── .dockerignore                           # Files/folders to ignore when building Docker image
+├── .env                                    # Environment variables for local development
+├── .env-example                            # Example environment variables template
+├── .gitignore                              # Files/folders ignored by Git
+├── pyproject.toml                          # Python project metadata and dependencies
+├── .python-version                         # Python version manager file (e.g., pyenv)
+├── README.md                               # Project documentation
+├── run.sh                                  # Script to start local DB and FastAPI server
+└── uv.lock                                 # Dependency lock file created by UV package manager
+```
 
 ## Running this project
 
