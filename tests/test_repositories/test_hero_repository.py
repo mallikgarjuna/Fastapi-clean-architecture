@@ -72,3 +72,31 @@ def test_read_one(session):
     # Assert
     assert result is not None
     assert result.id == hero_created.id
+
+
+def update(self, hero_db: Hero, hero_data: dict) -> Hero:
+    hero_db.sqlmodel_update(hero_data)
+    self.session.add(hero_db)
+    self.session.commit()
+    self.session.refresh(hero_db)
+    return hero_db
+
+
+def test_update(session):
+    """Test update persists changes"""
+    # Arrange
+    repo = HeroRepository(session)
+
+    # create 1 row before updating it
+    hero_created = repo.create(Hero(name="Deadpond", secret_name="Dive Wilson"))
+
+    hero_data = {"secret_name": "Updated Dive Wilson"}
+
+    # Act
+    result = repo.update(hero_created, hero_data)
+    # Note: assuming `sqlmodel_update()` exists for hero_created (Hero) model
+    # Can also manually implement/define this helper for hero_created instance of Hero model
+
+    # Assert
+    assert result.secret_name == "Updated Dive Wilson"  # returned result
+    assert session.get(Hero, result.id).secret_name == "Updated Dive Wilson"  # stored
