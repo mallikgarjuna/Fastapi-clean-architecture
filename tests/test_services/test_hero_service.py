@@ -5,6 +5,8 @@ from app.repositories.hero_repository import HeroRepository
 from app.services.hero_service import HeroService
 
 
+# Unit tests for app.services.hero_service.HeroService
+# 'mocker' fixture comes from `pytest-mock` plugin of `pytest` library - both installed
 def test_create(mocker):
     """calls repo and returns hero"""
     # def create(self, hero: HeroCreate) -> Hero:
