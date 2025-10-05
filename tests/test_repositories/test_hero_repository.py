@@ -53,3 +53,22 @@ def test_read_many(session):
     # Assert
     assert isinstance(result, list)
     assert len(result) == 3  # only 3 b/c a new session is created for every fixure call
+
+
+def test_read_one(session):
+    # def read_one(self, hero_id: int):
+    #     hero = self.session.get(Hero, hero_id)
+    #     return hero
+
+    # Arrange
+    repo = HeroRepository(session)
+
+    # create 1 row
+    hero_created = repo.create(Hero(name="Deadpond", secret_name="Dive Wilson"))
+
+    # Act
+    result = repo.read_one(hero_created.id)
+
+    # Assert
+    assert result is not None
+    assert result.id == hero_created.id
