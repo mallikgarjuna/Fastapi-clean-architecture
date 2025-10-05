@@ -60,6 +60,7 @@ def test_read_one_success(mocker):
     # if not hero:
     #     raise HTTPException(status_code=404, detail="Hero not found")
     # return hero
+
     # Arrange
     repo_mock = mocker.Mock(spec=HeroRepository)
     fake_hero = Hero(
@@ -93,17 +94,16 @@ def test_read_one_not_found_raises(mocker):
     assert excinfo.type.__name__ == "HTTPException"
 
 
-def update(self, hero_id: int, hero: HeroUpdate) -> Hero:
-    hero_db = self.repo.read_one(hero_id)
-    if not hero_db:
-        raise HTTPException(status_code=404, detail="Hero not found")
-    hero_data = hero.model_dump(exclude_unset=True)
-    hero_db = self.repo.update(hero_db, hero_data)
-
-    return hero_db
-
-
 def test_update_success(mocker):
+    # def update(self, hero_id: int, hero: HeroUpdate) -> Hero:
+    #     hero_db = self.repo.read_one(hero_id)
+    #     if not hero_db:
+    #         raise HTTPException(status_code=404, detail="Hero not found")
+    #     hero_data = hero.model_dump(exclude_unset=True)
+    #     hero_db = self.repo.update(hero_db, hero_data)
+
+    #     return hero_db
+
     # Arrange
     repo_mock = mocker.Mock(spec=HeroRepository)
     service = HeroService(repo=repo_mock)
@@ -140,6 +140,42 @@ def test_update_not_found_raises(mocker):
     # Act
     with pytest.raises(Exception) as excinfo:
         service.update(111, hero_update_mock)  # give random hero id
+
+    # Assert
+    assert excinfo.type.__name__ == "HTTPException"
+    assert getattr(excinfo.value, "status_code") == 404
+
+
+def test_delete_success_and_not_found_raises(mocker):
+    # def delete(self, hero_id: int) -> None:
+    #     hero = self.repo.read_one(hero_id)
+    #     if not hero:
+    #         raise HTTPException(status_code=404, detail="Hero not found")
+    #     self.repo.delete(hero)
+
+    # ==== ==== Success case ==== ====
+    # Arrange
+    repo_mock = mocker.Mock(spec=HeroRepository)
+    service = HeroService(repo=repo_mock)
+
+    fake_hero_db = Hero(
+        id=1, name="Deadpond", secret_name="Dive Wilson", age=None, gender=None
+    )
+    repo_mock.read_one.return_value = fake_hero_db
+
+    # Act
+    service.delete(1)
+
+    # Assert
+    repo_mock.delete.assert_called_once_with(fake_hero_db)
+
+    # ==== ==== Not Found Raises case ==== ====
+    # Arrange
+    repo_mock.read_one.return_value = None  # simulate not found
+
+    # Act
+    with pytest.raises(Exception) as excinfo:
+        service.delete(999)  # call with random hero id
 
     # Assert
     assert excinfo.type.__name__ == "HTTPException"
