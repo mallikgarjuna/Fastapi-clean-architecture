@@ -41,6 +41,9 @@ def setup_logging(level: int = logging.INFO) -> None:
     root_logger.addHandler(file_handler)
     root_logger.addHandler(console_handler)
 
+    # Silence the watchfies.main INFO logs (while keeping --realod working)
+    logging.getLogger("watchfiles").setLevel(logging.WARNING)
+
 
 # Get a module specific logger
 def get_logger(name: str) -> logging.Logger:
