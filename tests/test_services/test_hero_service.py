@@ -21,7 +21,12 @@ def test_create(mocker):
         id=1, name="Deadpond", secret_name="Dive Wilson", age=None, gender=None
     )
 
-    mocker.patch.object(Hero, "model_validate", return_value=fake_db_hero)
+    # Mock `model_validate` to return a known value
+    # b/c we want to test only service logic, not SQLModel internals
+    model_validate_mock = mocker.patch.object(
+        Hero, "model_validate", return_value=fake_db_hero
+    )
+
     repo_mock.create.return_value = fake_db_hero
 
     hero_in = HeroCreate(name="Deadpond", secret_name="Dive Wilson")
@@ -29,8 +34,12 @@ def test_create(mocker):
     result = service.create(hero_in)
 
     # Assert
+    # assert the returned value
     assert result is fake_db_hero
+    # assert/check repo.create() was called with the validated hero (fake_db_hero)
     repo_mock.create.assert_called_once_with(fake_db_hero)
+    # assert/check Hero.model_validate() was called with correct input
+    model_validate_mock.assert_called_once_with(hero_in)
 
 
 def test_read_many(mocker):

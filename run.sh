@@ -10,7 +10,7 @@
 # ===================================
 
 # Ensure PostgreSQL is running (before running fastapi app)
-if systemctl is-active --quiet postgresql; then
+if ! systemctl is-active --quiet postgresql; then
     echo "Starting PostgreSQL service..."
     sudo systemctl start postgresql
     sleep 3
