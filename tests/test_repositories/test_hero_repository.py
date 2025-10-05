@@ -74,16 +74,15 @@ def test_read_one(session):
     assert result.id == hero_created.id
 
 
-def update(self, hero_db: Hero, hero_data: dict) -> Hero:
-    hero_db.sqlmodel_update(hero_data)
-    self.session.add(hero_db)
-    self.session.commit()
-    self.session.refresh(hero_db)
-    return hero_db
-
-
 def test_update(session):
     """Test update persists changes"""
+    # def update(self, hero_db: Hero, hero_data: dict) -> Hero:
+    #     hero_db.sqlmodel_update(hero_data)
+    #     self.session.add(hero_db)
+    #     self.session.commit()
+    #     self.session.refresh(hero_db)
+    #     return hero_db
+
     # Arrange
     repo = HeroRepository(session)
 
@@ -100,3 +99,22 @@ def test_update(session):
     # Assert
     assert result.secret_name == "Updated Dive Wilson"  # returned result
     assert session.get(Hero, result.id).secret_name == "Updated Dive Wilson"  # stored
+
+
+def test_delete(session):
+    """Test delete removes row"""
+    # def delete(self, hero) -> None:
+    #     self.session.delete(hero)
+    #     self.session.commit()
+
+    # Arrange
+    repo = HeroRepository(session)
+
+    # create 1 row for deleting it
+    hero_created = repo.create(Hero(name="Deadpond", secret_name="Dive Wilson"))
+
+    # Act
+    repo.delete(hero_created)
+
+    # Assert
+    assert session.get(Hero, hero_created.id) is None  # no row after deletion
